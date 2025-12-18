@@ -107,4 +107,6 @@ class User extends Authenticatable
             ->where('product_id', $product->id)
             ->exists();
     }
+
+    
 }
