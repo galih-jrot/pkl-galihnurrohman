@@ -44,7 +44,7 @@ return [
     'client_secret' => env('GOOGLE_CLIENT_SECRET'),
 
     // URL callback (harus didaftarkan di Google Console)
-    'redirect'      => env('GOOGLE_REDIRECT_URI'),
+    'redirect'      => env('GOOGLE_REDIRECT_URI', 'http://localhost:8000/auth/google/callback'),
 ],
 
 
