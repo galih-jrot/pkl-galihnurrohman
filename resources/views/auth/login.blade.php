@@ -148,11 +148,10 @@ TOMBOL LOGIN DENGAN GOOGLE ================================================ --}}
 </p>
 
             {{-- ================== LINK REGISTER ================== --}}
-           
+            
           </form>
         </div>
       </div>
-    </div>
+    </div>E
   </div>
 </div>
-@endsection {{-- ↑ Akhir dari section content --}}

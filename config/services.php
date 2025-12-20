@@ -35,17 +35,16 @@ return [
         ],
     ],
 
-    'google' => [
-    // Client ID dari Google Cloud Console
-    'client_id'     => env('GOOGLE_CLIENT_ID'),
-    // ↑ env() membaca nilai dari file .env
+     'google' => [
+        // Client ID dari Google Cloud Console
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        // ↑ env() membaca nilai dari file .env
 
-    // Client Secret dari Google Cloud Console
-    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        // Client Secret dari Google Cloud Console
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
 
-    // URL callback (harus didaftarkan di Google Console)
-    'redirect'      => env('GOOGLE_REDIRECT_URI', 'http://localhost:8000/auth/google/callback'),
-],
-
+        // URL callback (harus didaftarkan di Google Console)
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
+    ],
 
 ];
