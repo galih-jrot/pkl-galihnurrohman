@@ -18,34 +18,70 @@ class CategorySeeder extends Seeder
                 'name' => 'Keripik & Snack Kentang',
                 'slug' => 'keripik-snack-kentang',
                 'description' => 'Koleksi keripik dan snack kentang dengan berbagai rasa',
-                'image' => null,
+                'image' => 'galih.jpg',
                 'is_active' => true,
             ],
             [
                 'name' => 'Kacang & Biji-bijian',
                 'slug' => 'kacang-biji-bijian',
                 'description' => 'Berbagai jenis kacang dan biji-bijian yang gurih',
-                'image' => null,
+                'image' => 'jarot.png',
                 'is_active' => true,
             ],
             [
                 'name' => 'Permen & Jelly',
                 'slug' => 'permen-jelly',
                 'description' => 'Permen dan jelly dengan berbagai rasa untuk semua umur',
-                'image' => null,
+                'image' => 'galih.jpg',
                 'is_active' => true,
             ],
             [
                 'name' => 'Camilan Tradisional',
                 'slug' => 'camilan-tradisional',
                 'description' => 'Camilan tradisional Indonesia yang lezat',
-                'image' => null,
+                'image' => 'jarot.png',
                 'is_active' => true,
             ],
+             [
+                'name' => 'minuman khas daerah',
+                'slug' => 'minuman-tradisional',
+                'description' => 'minuman tradisional Indonesia yang lezat',
+                'image' => 'jarot.png',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'makanan ringan Tradisional',
+                'slug' => 'makanan-ringan-tradisional',
+                'description' => 'makanan ringan tradisional Indonesia yang lezat',
+                'image' => 'jarot.png',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Roti & Kue',
+                'slug' => 'roti-kue',
+                'description' => 'Roti dan kue lezat untuk camilan',
+                'image' => 'galih.jpg',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Minuman Segar',
+                'slug' => 'minuman-segar',
+                'description' => 'Minuman segar dan menyegarkan',
+                'image' => 'jarot.png',
+                'is_active' => true,
+            ],
+
+
+
+
+
         ];
 
         foreach ($categories as $categoryData) {
-            Category::create($categoryData);
+            Category::updateOrCreate(
+                ['slug' => $categoryData['slug']],
+                $categoryData
+            );
         }
 
         $this->command->info('Berhasil membuat ' . count($categories) . ' kategori sample.');

@@ -60,11 +60,13 @@ class User extends Authenticatable
     }
 
     /**
-     * User memiliki banyak item wishlist.
+     * Relasi many-to-many ke products melalui wishlists.
      */
     public function wishlists()
     {
-        return $this->hasMany(Wishlist::class);
+        // Relasi User ke Product melalui tabel wishlists
+        return $this->belongsToMany(Product::class, 'wishlists')
+                    ->withTimestamps(); // Agar created_at/updated_at di pivot terisi
     }
 
     /**
@@ -75,14 +77,7 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
-    /**
-     * Relasi many-to-many ke products melalui wishlists.
-     */
-    public function wishlistProducts()
-    {
-        return $this->belongsToMany(Product::class, 'wishlists')
-            ->withTimestamps();
-    }
+
 
     // ==================== HELPER METHODS ====================
 
@@ -103,13 +98,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Cek apakah produk ada di wishlist user.
+     * Helper untuk cek apakah user sudah wishlist produk tertentu
      */
-    public function hasInWishlist(Product $product): bool
+    public function hasInWishlist(Product $product)
     {
-        return $this->wishlists()
-            ->where('product_id', $product->id)
-            ->exists();
+        return $this->wishlists()->where('product_id', $product->id)->exists();
     }
 // ========================================
 // FILE: app/Models/User.php (bagian yang perlu diupdate)
@@ -181,4 +174,7 @@ public function getInitialsAttribute(): string
     // Ambil maksimal 2 huruf pertama saja
     return substr($initials, 0, 2);
 }
+
+
+
 }

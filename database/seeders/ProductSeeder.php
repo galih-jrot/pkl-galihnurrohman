@@ -155,23 +155,75 @@ class ProductSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => true,
             ],
-            
+            [
+                'category_id' => $categories->where('slug', 'roti-kue')->first()?->id ?? $categories->first()->id,
+                'name' => 'Roti Tawar Manis',
+                'slug' => 'roti-tawar-manis',
+                'description' => 'Roti tawar manis yang lembut dan cocok untuk sarapan.',
+                'price' => 12000,
+                'discount_price' => null,
+                'stock' => 50,
+                'weight' => 200,
+                'is_active' => true,
+                'is_featured' => false,
+            ],
+            [
+                'category_id' => $categories->where('slug', 'roti-kue')->first()?->id ?? $categories->first()->id,
+                'name' => 'Kue Brownies',
+                'slug' => 'kue-brownies',
+                'description' => 'Kue brownies coklat yang fudgy dan lezat.',
+                'price' => 25000,
+                'discount_price' => 22000,
+                'stock' => 30,
+                'weight' => 150,
+                'is_active' => true,
+                'is_featured' => true,
+            ],
+            [
+                'category_id' => $categories->where('slug', 'minuman-segar')->first()?->id ?? $categories->first()->id,
+                'name' => 'Jus Jeruk Segar',
+                'slug' => 'jus-jeruk-segar',
+                'description' => 'Jus jeruk segar tanpa tambahan gula.',
+                'price' => 15000,
+                'discount_price' => null,
+                'stock' => 40,
+                'weight' => 300,
+                'is_active' => true,
+                'is_featured' => true,
+            ],
+            [
+                'category_id' => $categories->where('slug', 'minuman-segar')->first()?->id ?? $categories->first()->id,
+                'name' => 'Teh Hijau Dingin',
+                'slug' => 'teh-hijau-dingin',
+                'description' => 'Teh hijau dingin yang menyegarkan.',
+                'price' => 10000,
+                'discount_price' => 8000,
+                'stock' => 60,
+                'weight' => 250,
+                'is_active' => true,
+                'is_featured' => false,
+            ],
+
 
         ];
 
 
         foreach ($products as $productData) {
-            $product = Product::create($productData);
+            $product = Product::updateOrCreate(
+                ['slug' => $productData['slug']],
+                $productData
+            );
 
-            // Buat gambar produk placeholder
-            \App\Models\ProductImage::create([
-                'product_id' => $product->id,
-                'image_path' => 'products/placeholder.jpg',
-                'is_primary' => true,
-                'sort_order' => 1,
-            ]);
-        }
+            // Buat gambar produk placeholder jika belum ada
+            \App\Models\ProductImage::updateOrCreate(
+                ['product_id' => $product->id, 'is_primary' => true],
+                [
+                    'image_path' => 'products/placeholder.jpg',
+                    'sort_order' => 1,
+                ]
+            );
 
         $this->command->info('Berhasil membuat ' . count($products) . ' produk sample dengan gambar.');
     }
+}
 }

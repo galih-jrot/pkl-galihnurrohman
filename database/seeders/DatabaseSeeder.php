@@ -22,6 +22,14 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        // Create admin user
+        User::factory()->create([
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('password'), // Default password: password
+            'role' => 'admin',
+        ]);
+
         $this->call([
             CategorySeeder::class,
             ProductSeeder::class,

@@ -47,7 +47,18 @@
                 </div>
             </div>
 
-            {{-- 5. Delete Account --}}
+            {{-- 5. Admin Access --}}
+            @if($user->isAdmin())
+            <div class="card mb-4 border-primary">
+                <div class="card-header bg-primary text-white fw-bold">Akses Admin</div>
+                <div class="card-body">
+                    <p>Anda memiliki akses admin. Klik tombol di bawah untuk masuk ke panel admin.</p>
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Masuk ke Admin</a>
+                </div>
+            </div>
+            @endif
+
+            {{-- 6. Delete Account --}}
             <div class="card border-danger">
                 <div class="card-header bg-danger text-white fw-bold">Hapus Akun</div>
                 <div class="card-body">

@@ -35,7 +35,7 @@ class HomeController extends Controller
             }])
             ->having('active_products_count', '>', 0) // Hanya yang punya produk
             ->orderBy('name')
-            ->take(6) // Batasi 6 kategori
+            ->take(8) // Batasi 8 kategori
             ->get();
 
         // ================================================

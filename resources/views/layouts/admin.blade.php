@@ -83,7 +83,9 @@
                                  Jangan query database langsung di Blade view di production app! --}}
                             @php
                                 $pendingCount = \App\Models\Order::where('status', 'pending')
-                                    ->where('payment_status', 'paid')->count();
+                                    ->whereHas('payment', function($query) {
+                                        $query->where('status', 'success');
+                                    })->count();
                             @endphp
                             @if($pendingCount > 0)
                                 <span class="badge bg-warning text-dark ms-auto">{{ $pendingCount }}</span>

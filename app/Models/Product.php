@@ -91,6 +91,15 @@ class Product extends Model
         return $this->hasMany(Wishlist::class);
     }
 
+    /**
+     * Relasi many-to-many ke users melalui wishlists.
+     */
+    public function wishlisters()
+    {
+        return $this->belongsToMany(User::class, 'wishlists')
+                    ->withTimestamps();
+    }
+
     // ==================== ACCESSORS ====================
 
     /**
@@ -332,4 +341,6 @@ class Product extends Model
     {
         return $this->stock >= $quantity;
     }
+
+   
 }

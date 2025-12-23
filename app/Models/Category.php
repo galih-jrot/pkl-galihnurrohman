@@ -92,8 +92,8 @@ class Category extends Model
     public function getImageUrlAttribute(): string
     {
         if ($this->image) {
-            // Jika ada gambar, generate full URL ke storage
-            return asset('storage/' . $this->image);
+            // Jika ada gambar, generate full URL ke images
+            return asset('images/' . $this->image);
         }
         // Jika tidak, tampilkan placeholder
         return asset('images/placeholder-category.jpg');
