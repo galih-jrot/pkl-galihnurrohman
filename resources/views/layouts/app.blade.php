@@ -6,6 +6,12 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
+   <!-- ... meta tags ... -->
+
+    @vite(['resources/css/app.css', 'resources/js/app.js']) {{-- Stack untuk
+    script tambahan dari child view --}} @stack('scripts')
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -31,6 +37,8 @@
 </head>
 
 <body>
+   <!-- ... content ... -->
+
     {{-- ============================================
          NAVBAR
          ============================================ --}}

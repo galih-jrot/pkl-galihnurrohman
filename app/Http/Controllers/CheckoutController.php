@@ -1,79 +1,41 @@
 <?php
+// app/Http/Controllers/CheckoutController.php
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Payment;
+use App\Services\OrderService;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
-    public function index(): View
+    public function index()
     {
-        $cart = auth()->user()->cart()->with('cartItems.product')->first();
-
-        if (!$cart || $cart->cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Keranjang kosong');
+        // Pastikan keranjang tidak kosong
+        $cart = auth()->user()->cart;
+        if (!$cart || $cart->items->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Keranjang kosong.');
         }
 
-        $total = $cart->cartItems->sum(function ($item) {
-            return $item->quantity * $item->product->display_price;
-        });
-
-        return view('checkout.index', compact('cart', 'total'));
+        return view('checkout.index', compact('cart'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, OrderService $orderService)
     {
         $request->validate([
-            'payment_method' => 'required|in:bank_transfer,cod',
-            'notes' => 'nullable|string|max:500',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string|max:500',
         ]);
 
-        $cart = auth()->user()->cart()->with('cartItems.product')->first();
-
-        if (!$cart || $cart->cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Keranjang kosong');
-        }
-
-        DB::beginTransaction();
         try {
-            // Buat order
-            $order = Order::create([
-                'user_id' => auth()->id(),
-                'total_amount' => $cart->cartItems->sum(fn($item) => $item->quantity * $item->product->display_price),
-                'status' => 'pending',
-                'payment_method' => $request->payment_method,
-                'notes' => $request->notes,
-            ]);
+            $order = $orderService->createOrder(auth()->user(), $request->only(['name', 'phone', 'address']));
 
-            // Buat order items
-            foreach ($cart->cartItems as $cartItem) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $cartItem->product_id,
-                    'quantity' => $cartItem->quantity,
-                    'price' => $cartItem->product->display_price,
-                ]);
-
-                // Kurangi stok
-                $cartItem->product->decrementStock($cartItem->quantity);
-            }
-
-            // Kosongkan cart
-            $cart->cartItems()->delete();
-
-            DB::commit();
-
-            return redirect()->route('orders.show', $order)->with('success', 'Pesanan berhasil dibuat');
+            // Redirect ke halaman pembayaran (akan dibuat besok)
+            // Untuk sekarang, redirect ke detail order
+            return redirect()->route('orders.show', $order)
+                ->with('success', 'Pesanan berhasil dibuat! Silahkan lakukan pembayaran.');
         } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Gagal membuat pesanan: ' . $e->getMessage());
+            return back()->with('error', $e->getMessage());
         }
     }
 }

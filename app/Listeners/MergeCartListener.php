@@ -2,6 +2,8 @@
 
 namespace App\Listeners;
 
+use App\Services\CartService;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -18,10 +20,10 @@ class MergeCartListener
     /**
      * Handle the event.
      */
-    public function handle(object $event): void
+    public function handle(Login $event): void
     {
         // event->user adalah user yang baru login
-        $cartService = new \App\Services\CartService();
+        $cartService = new CartService();
         $cartService->mergeCartOnLogin();
 
     }
