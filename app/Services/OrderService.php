@@ -51,8 +51,7 @@ class OrderService
             // B. BUAT HEADER ORDER
             $order = Order::create([
                 'user_id'          => $user->id,
-                // Generate Order Number Unik. Contoh: ORD-X7Y8Z9A1B2
-                'order_number'     => 'ORD-' . strtoupper(Str::random(10)),
+                'order_number'     => $this->generateOrderNumber(),
                 'status'           => 'pending',
                 'payment_status'   => 'unpaid',
                 'shipping_name'    => $shippingData['name'],
@@ -94,5 +93,19 @@ class OrderService
             return $order;
         });
         // ==================== DATABASE TRANSACTION END ====================
+    }
+
+    /**
+     * Generate unique order number in format ORD-YYYYMMDD-XXX
+     */
+    private function generateOrderNumber(): string
+    {
+        do {
+            $date = now()->format('Ymd');
+            $number = mt_rand(1, 999);
+            $orderNumber = "ORD-{$date}-" . str_pad($number, 3, '0', STR_PAD_LEFT);
+        } while (Order::where('order_number', $orderNumber)->exists());
+
+        return $orderNumber;
     }
 }

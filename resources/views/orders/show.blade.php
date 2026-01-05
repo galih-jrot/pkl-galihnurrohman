@@ -105,7 +105,7 @@
                 </div>
 
                 {{-- Tombol Bayar (hanya tampil jika pending) --}}
-                @if($order->status === 'pending' && $snapToken)
+                @if($order->status === 'pending' && $order->payment_status === 'unpaid' && ($snapToken || $order->snap_token))
                 <div class="p-6 bg-indigo-50 border-t text-center">
                     <p class="text-gray-600 mb-4">
                         Selesaikan pembayaran Anda sebelum batas waktu berakhir.
@@ -125,7 +125,7 @@
     </div>
 
     {{-- Snap.js Integration --}}
-    @if($snapToken)
+    @if($snapToken || $order->snap_token)
     @push('scripts')
         {{-- Load Snap JS dari Midtrans --}}
         <script src="{{ config('midtrans.snap_url') }}"

@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    # Prevent PHP execution in uploads folder
+    RewriteRule ^storage/products/.*\.php$ - [F,L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

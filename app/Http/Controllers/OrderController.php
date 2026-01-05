@@ -24,6 +24,29 @@ class OrderController extends Controller
 
         $order->load(['orderItems.product', 'user']);
 
-        return view('orders.show', compact('order'));
+        // Generate snap token jika order masih pending dan belum dibayar
+        $snapToken = null;
+        if ($order->status === 'pending' && $order->payment_status === 'unpaid') {
+            try {
+                $midtransService = app(\App\Services\MidtransService::class);
+                $snapToken = $midtransService->createSnapToken($order);
+
+                // Simpan snap token ke database jika belum ada
+                if (!$order->snap_token) {
+                    $order->update(['snap_token' => $snapToken]);
+                } else {
+                    // Gunakan yang sudah ada jika sudah tersimpan
+                    $snapToken = $order->snap_token;
+                }
+            } catch (\Exception $e) {
+                // Log error tapi jangan hentikan halaman
+                logger()->error('Failed to generate snap token', [
+                    'order_id' => $order->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
+
+        return view('orders.show', compact('order', 'snapToken'));
     }
 }

@@ -58,7 +58,21 @@
             </div>
             @endif
 
-            {{-- 6. Delete Account --}}
+            {{-- 6. Logout --}}
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark fw-bold">Logout</div>
+                <div class="card-body">
+                    <p>Klik tombol di bawah untuk keluar dari akun Anda.</p>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-box-arrow-right me-2"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {{-- 7. Delete Account --}}
             <div class="card border-danger">
                 <div class="card-header bg-danger text-white fw-bold">Hapus Akun</div>
                 <div class="card-body">

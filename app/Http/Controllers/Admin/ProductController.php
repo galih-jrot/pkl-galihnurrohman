@@ -198,8 +198,8 @@ class ProductController extends Controller
         $isFirst = $product->images()->count() === 0;
 
         foreach ($files as $index => $file) {
-            // Generate nama unik: product-{id}-{timestamp}-{index}.ext
-            $filename = 'product-' . $product->id . '-' . time() . '-' . $index . '.' . $file->extension();
+            // Generate nama unik menggunakan UUID untuk keamanan
+            $filename = \Illuminate\Support\Str::uuid() . '.' . $file->extension();
 
             // Simpan fisik file
             $path = $file->storeAs('products', $filename, 'public');

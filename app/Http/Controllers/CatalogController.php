@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class CatalogController extends Controller
 {
@@ -18,7 +19,8 @@ class CatalogController extends Controller
         // ->with(): Eager Load relasi category & primaryImage untuk menghindari query berulang (N+1).
         // ->available(): Query Scope (lokal di model Product) yang memfilter produk aktif & stok > 0.
         $query = Product::query()
-            ->with(['category', 'primaryImage'])
+            ->select('id', 'name', 'slug', 'price', 'discount_price', 'category_id', 'stock', 'is_active', 'created_at') // Select only needed columns
+            ->with(['category:id,name,slug', 'primaryImage:id,image_path,product_id']) // Eager load with specific columns
             ->available(); // Scope 'available'
 
         // 2. FILTERING PIPELINE

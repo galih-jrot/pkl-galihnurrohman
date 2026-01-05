@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -24,6 +25,35 @@ class CategoryController extends Controller
             ->paginate(10); // Batasi 10 item per halaman
 
         return view('admin.categories.index', compact('categories'));
+    }
+
+    /**
+     * Menampilkan form tambah kategori.
+     */
+    public function create()
+    {
+        return view('admin.categories.create');
+    }
+
+    /**
+     * Menampilkan detail kategori.
+     */
+    public function show(Category $category)
+    {
+        // Load produk yang terkait untuk ditampilkan
+        $category->load(['products' => function ($query) {
+            $query->latest()->take(10); // Tampilkan 10 produk terbaru
+        }]);
+
+        return view('admin.categories.show', compact('category'));
+    }
+
+    /**
+     * Menampilkan form edit kategori.
+     */
+    public function edit(Category $category)
+    {
+        return view('admin.categories.edit', compact('category'));
     }
 
     /**
@@ -56,6 +86,9 @@ class CategoryController extends Controller
 
         // 4. Simpan ke Database
         Category::create($validated);
+
+        // 5. Clear cache setelah kategori baru ditambahkan
+        Cache::forget('global_categories');
 
         return back()->with('success', 'Kategori berhasil ditambahkan!');
     }
@@ -93,6 +126,9 @@ class CategoryController extends Controller
 
         // 4. Update data di database
         $category->update($validated);
+
+        // 5. Clear cache setelah kategori diperbarui
+        Cache::forget('global_categories');
 
         return back()->with('success', 'Kategori berhasil diperbarui!');
     }

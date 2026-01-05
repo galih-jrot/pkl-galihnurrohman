@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
 
+        // Security Headers Middleware
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+
         // ==========================================================
         // BYPASS CSRF FOR WEBHOOKS
         // ==========================================================
