@@ -25,8 +25,8 @@ class User extends Authenticatable
         'google_id',
         'phone',
         'address',
-        'google_id', // ← Tambahkan ini
-'avatar',    // ← Tambahkan ini
+        
+            
 
     ];
 
