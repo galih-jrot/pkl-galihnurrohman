@@ -1,5 +1,4 @@
 <?php
-// bootstrap/app.php
 
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -11,13 +10,12 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware) {
+    ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            // ↑ 'admin' adalah nama alias
+            // ↑ AdminMiddleware::class adalah class yang dijalankan
         ]);
-
-        // Security Headers Middleware
-        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
 
         // ==========================================================
         // BYPASS CSRF FOR WEBHOOKS
@@ -30,6 +28,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'midtrans/*',            // Wildcard (jika ada route lain)
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions) {
+    ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

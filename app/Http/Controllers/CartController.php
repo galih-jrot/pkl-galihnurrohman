@@ -1,6 +1,4 @@
 <?php
-// app/Http/Controllers/CartController.php
-
 namespace App\Http\Controllers;
 
 use App\Models\Product;
@@ -9,43 +7,53 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    protected $cartService;
+    protected CartService $cartService;
 
-    // Inject Service melalui Constructor
     public function __construct(CartService $cartService)
     {
         $this->cartService = $cartService;
     }
 
+    /**
+     * Tampilkan halaman keranjang
+     */
     public function index()
     {
-        $cart = $this->cartService->getCart();
-        // Load produk dan gambar untuk ditampilkan
-        $cart->load(['items.product.primaryImage']);
+        $cart  = $this->cartService->getCart();
+        $items = $this->cartService->getItems();
+        $total = $this->cartService->getTotalPrice();
 
-        return view('cart.index', compact('cart'));
+        return view('cart.index', compact('cart', 'items', 'total'));
     }
 
+    /**
+     * Tambah produk ke keranjang
+     */
     public function add(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity'   => 'required|integer|min:1',
+            'product_id' => ['required', 'exists:products,id'],
+            'quantity'   => ['required', 'integer', 'min:1'],
         ]);
 
         try {
             $product = Product::findOrFail($request->product_id);
             $this->cartService->addProduct($product, $request->quantity);
 
-            return back()->with('success', 'Produk berhasil ditambahkan ke keranjang!');
+            return back()->with('success', 'Produk berhasil ditambahkan ke keranjang.');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
     }
 
-    public function update(Request $request, $itemId)
+    /**
+     * Update quantity item
+     */
+    public function update(Request $request, int $itemId)
     {
-        $request->validate(['quantity' => 'required|integer|min:0']);
+        $request->validate([
+            'quantity' => ['required', 'integer', 'min:0'],
+        ]);
 
         try {
             $this->cartService->updateQuantity($itemId, $request->quantity);
@@ -55,7 +63,10 @@ class CartController extends Controller
         }
     }
 
-    public function remove($itemId)
+    /**
+     * Hapus item dari keranjang
+     */
+    public function remove(int $itemId)
     {
         try {
             $this->cartService->removeItem($itemId);

@@ -32,6 +32,7 @@
                             <tbody>
                                 @foreach($cart->items as $item)
                                     <tr>
+                                        {{-- nama dan image produk --}}
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <img src="{{ $item->product->image_url }}"
@@ -49,9 +50,13 @@
                                                 </div>
                                             </div>
                                         </td>
+
+                                        {{-- Harga Produk --}}
                                         <td class="text-center align-middle">
                                             {{ $item->product->formatted_price }}
                                         </td>
+
+                                        {{-- Jumlah Produk --}}
                                         <td class="text-center align-middle">
                                             <form action="{{ route('cart.update', $item->id) }}" method="POST"
                                                   class="d-inline-flex align-items-center">
@@ -65,9 +70,13 @@
                                                        onchange="this.form.submit()">
                                             </form>
                                         </td>
+
+                                        {{-- Subtotal --}}
                                         <td class="text-end align-middle fw-bold">
                                             Rp {{ number_format($item->subtotal, 0, ',', '.') }}
                                         </td>
+
+                                        {{-- Hapus Item --}}
                                         <td class="align-middle">
                                             <form action="{{ route('cart.remove', $item->id) }}" method="POST">
                                                 @csrf
@@ -94,19 +103,23 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-2">
+                            {{-- total harga --}}
                             <span>Total Harga ({{ $cart->items->sum('quantity') }} barang)</span>
                             <span>Rp {{ number_format($cart->items->sum('subtotal'), 0, ',', '.') }}</span>
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between mb-3">
+                            {{-- total --}}
                             <span class="fw-bold">Total</span>
                             <span class="fw-bold text-primary fs-5">
                                 Rp {{ number_format($cart->items->sum('subtotal'), 0, ',', '.') }}
                             </span>
                         </div>
+                        {{-- tombol checkout --}}
                         <a href="{{ route('checkout.index') }}" class="btn btn-primary w-100 btn-lg">
                             <i class="bi bi-credit-card me-2"></i>Checkout
                         </a>
+                        {{-- tombol lanjut belanja --}}
                         <a href="{{ route('catalog.index') }}" class="btn btn-outline-secondary w-100 mt-2">
                             <i class="bi bi-arrow-left me-2"></i>Lanjut Belanja
                         </a>
@@ -115,7 +128,7 @@
             </div>
         </div>
     @else
-        {{-- Empty Cart --}}
+        {{-- Empty Cart/Keranjang Kosong --}}
         <div class="text-center py-5">
             <i class="bi bi-cart-x display-1 text-muted"></i>
             <h4 class="mt-3">Keranjang Kosong</h4>

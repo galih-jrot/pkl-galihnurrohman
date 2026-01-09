@@ -16,7 +16,7 @@ class MidtransService
      */
     public function __construct()
     {
-        Config::$serverKey    = config('midtrans.serverKey');
+        Config::$serverKey    = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production');
         Config::$isSanitized  = config('midtrans.is_sanitized');
         Config::$is3ds        = config('midtrans.is_3ds');
@@ -43,15 +43,9 @@ class MidtransService
         // 1. Transaction Details (WAJIB)
         // 'gross_amount' HARUS integer (Rupiah tidak ada sen di Midtrans).
         // Jangan kirim float/string pecahan!
-        // Hitung total keseluruhan termasuk ongkir
-        $grossAmount = (int) $order->total_amount;
-        if ($order->shipping_cost > 0) {
-            $grossAmount += (int) $order->shipping_cost;
-        }
-
         $transactionDetails = [
             'order_id'     => $order->order_number, // ID Unik Order
-            'gross_amount' => $grossAmount,
+            'gross_amount' => (int) $order->total_amount,
         ];
 
         // 2. Customer Details (Opsional tapi Recommended)

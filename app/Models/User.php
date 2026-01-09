@@ -1,37 +1,38 @@
 <?php
-// app/Models/User.php
 
 namespace App\Models;
 
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
+    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * Kolom yang boleh diisi secara mass-assignment.
-     * Ini mencegah vulnerability mass-assignment.
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role',
-        'avatar',
-        'google_id',
-        'phone',
-        'address',
-        
-            
-
+        'role', 
+        'avatar', 
+        'google_id', 
+        'phone', 
+        'address'
     ];
 
     /**
-     * Kolom yang disembunyikan saat serialisasi ke JSON/array.
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -39,17 +40,17 @@ class User extends Authenticatable
     ];
 
     /**
-     * Casting tipe data otomatis.
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
+            'password' => 'hashed',
         ];
     }
-
-    // ==================== RELATIONSHIPS ====================
 
     /**
      * User memiliki satu keranjang aktif.
@@ -60,11 +61,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Relasi many-to-many ke products melalui wishlists.
+     * User memiliki banyak item wishlist.
      */
     public function wishlists()
     {
-        // Relasi User ke Product melalui tabel wishlists
+    // Relasi User ke Product melalui tabel wishlists
         return $this->belongsToMany(Product::class, 'wishlists')
                     ->withTimestamps(); // Agar created_at/updated_at di pivot terisi
     }
@@ -77,7 +78,14 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
-
+    /**
+     * Relasi many-to-many ke products melalui wishlists.
+     */
+    public function wishlistProducts()
+    {
+        return $this->belongsToMany(Product::class, 'wishlists')
+                    ->withTimestamps();
+    }
 
     // ==================== HELPER METHODS ====================
 
@@ -98,33 +106,16 @@ class User extends Authenticatable
     }
 
     /**
-     * Helper untuk cek apakah user sudah wishlist produk tertentu
+     * Cek apakah produk ada di wishlist user.
      */
-    public function hasInWishlist(Product $product)
+    public function hasInWishlist(Product $product): bool
     {
-        return $this->wishlists()->where('product_id', $product->id)->exists();
+        return $this->wishlists()
+                    ->where('product_id', $product->id)
+                    ->exists();
     }
-// ========================================
-// FILE: app/Models/User.php (bagian yang perlu diupdate)
-// ========================================
 
-
-    // Tambahkan google_id dan avatar ke fillable
-// app/Models/User.php
-
-// Tambahkan accessor untuk avatar URL
-
-/**
- * Get the avatar URL.
- * Accessor ini otomatis dipanggil saat kita akses $user->avatar_url
- * Logika Prioritas:
- * 1. Cek Storage Lokal: Apakah user upload file custom? Jika ya, return URL local storage.
- * 2. Cek URL Eksternal: Apakah user login via Google? Jika ya, return URL dari Google.
- * 3. Fallback: Gunakan Gravatar berdasarkan hash email agar user tidak tampil polos.
- */
-// app/Models/User.php
-
-// Tambahkan accessor untuk avatar URL
+    // Tambahkan accessor untuk avatar URL
 
 /**
  * Get the avatar URL.
@@ -174,7 +165,4 @@ public function getInitialsAttribute(): string
     // Ambil maksimal 2 huruf pertama saja
     return substr($initials, 0, 2);
 }
-
-
-
 }

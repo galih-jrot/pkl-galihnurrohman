@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
+
 class ProfileController extends Controller
 {
     /**
@@ -64,7 +65,7 @@ class ProfileController extends Controller
      * Helper khusus untuk menangani logika upload avatar.
      * Mengembalikan string path file yang tersimpan.
      */
-    protected function uploadAvatar(ProfileUpdateRequest $request, $user): string
+    protected function uploadAvatar(Request $request, $user): string
     {
         // Hapus avatar lama (Garbage Collection)
         // Cek 1: Apakah user punya avatar sebelumnya?
@@ -102,6 +103,7 @@ class ProfileController extends Controller
         return back()->with('success', 'Foto profil berhasil dihapus.');
     }
 
+
     /**
      * Update password user.
      */
@@ -109,7 +111,7 @@ class ProfileController extends Controller
     {
         $validated = $request->validateWithBag('updatePassword', [
             'current_password' => ['required', 'current_password'],
-            'password'         => ['required', 'confirmed', 'min:8'],
+            'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
         $request->user()->update([
@@ -147,5 +149,28 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+    public function updateAvatar(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'avatar' => ['required', 'image', 'max:2048'],
+        ],
+        [
+            'avatar.required' => 'File foto profil wajib diunggah.',
+            'avatar.image' => 'File harus berupa gambar (JPG, PNG, WebP).',
+            'avatar.max' => 'Ukuran file maksimal 2MB.',
+        ]);
+        
+
+        $user = $request->user();
+
+        // Pakai helper yang SUDAH kamu punya
+        $avatarPath = $this->uploadAvatar($request, $user);
+
+        $user->update([
+            'avatar' => $avatarPath,
+        ]);
+
+        return back()->with('success', 'Foto profil berhasil diperbarui!');
     }
 }

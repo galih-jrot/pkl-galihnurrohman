@@ -65,7 +65,7 @@
                         <label for="image" class="form-label">Gambar Kategori</label>
                         @if($category->image)
                             <div class="mb-2">
-                                <img src="{{ Storage::url($category->image) }}"
+                                <img src="{{ asset('storage/categories/' . $category->image) }}"
                                      alt="{{ $category->name }}"
                                      class="img-thumbnail"
                                      style="max-width: 200px;">

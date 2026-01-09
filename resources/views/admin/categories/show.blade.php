@@ -18,7 +18,7 @@
             <div class="card-body">
                 @if($category->image)
                     <div class="text-center mb-3">
-                        <img src="{{ Storage::url($category->image) }}"
+                        <img src="{{ asset('storage/categories/' . $category->image) }}"
                              alt="{{ $category->name }}"
                              class="img-fluid rounded">
                     </div>

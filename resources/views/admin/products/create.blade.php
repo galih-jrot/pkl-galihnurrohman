@@ -1,122 +1,147 @@
-{{-- ================================================
-     FILE: resources/views/admin/products/create.blade.php
-     FUNGSI: Form untuk menambah produk baru
-     ================================================ --}}
-
+{{-- resources/views/admin/products/create.blade.php --}}
 @extends('layouts.admin')
 
 @section('title', 'Tambah Produk')
-@section('page-title', 'Tambah Produk Baru')
 
 @section('content')
 <div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white">
-                <h6 class="mb-0">Informasi Produk</h6>
-            </div>
-            <div class="card-body">
+    <div class="col-lg-12">
+
+        {{-- Header --}}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="h3 mb-0 fw-bold text-primary">
+                <i class="bi bi-box-seam me-1"></i> Tambah Produk Baru
+            </h2>
+            <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Kembali
+            </a>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+
                 <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
-                    {{-- Nama Produk --}}
+                    {{-- ================= BASIC INFO ================= --}}
+                    <h6 class="fw-bold mb-3 text-muted">
+                        <i class="bi bi-info-circle me-1"></i> Informasi Produk
+                    </h6>
+
                     <div class="mb-3">
-                        <label for="name" class="form-label">Nama Produk <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control @error('name') is-invalid @enderror"
-                               id="name" name="name" value="{{ old('name') }}" required>
-                        @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label class="form-label fw-semibold">Nama Produk</label>
+                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                            value="{{ old('name') }}" required>
+                        @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
-                    {{-- Kategori --}}
                     <div class="mb-3">
-                        <label for="category_id" class="form-label">Kategori <span class="text-danger">*</span></label>
-                        <select class="form-select @error('category_id') is-invalid @enderror"
-                                id="category_id" name="category_id" required>
-                            <option value="">Pilih Kategori</option>
+                        <label class="form-label fw-semibold">Kategori</label>
+                        <select name="category_id" class="form-select @error('category_id') is-invalid @enderror"
+                            required>
+                            <option value="">Pilih Kategori...</option>
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                    {{ $category->name }}
-                                </option>
+                            <option value="{{ $category->id }}" {{ old('category_id')==$category->id ? 'selected' : ''
+                                }}>
+                                {{ $category->name }}
+                            </option>
                             @endforeach
                         </select>
-                        @error('category_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        @error('category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
-                    {{-- Deskripsi --}}
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Deskripsi</label>
-                        <textarea class="form-control @error('description') is-invalid @enderror"
-                                  id="description" name="description" rows="4">{{ old('description') }}</textarea>
-                        @error('description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Deskripsi Produk</label>
+                        <textarea name="description" rows="4"
+                            class="form-control @error('description') is-invalid @enderror"
+                            placeholder="Deskripsi singkat produk...">{{ old('description') }}</textarea>
+                        @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
-                    {{-- Harga --}}
+                    {{-- ================= PRICE & STOCK ================= --}}
+                    <h6 class="fw-bold mb-3 text-muted">
+                        <i class="bi bi-cash-stack me-1"></i> Harga & Stok
+                    </h6>
+
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="price" class="form-label">Harga <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="number" class="form-control @error('price') is-invalid @enderror"
-                                           id="price" name="price" value="{{ old('price') }}" min="0" step="100" required>
-                                </div>
-                                @error('price')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Harga (Rp)</label>
+                            <input type="number" name="price" class="form-control @error('price') is-invalid @enderror"
+                                value="{{ old('price') }}" min="1000" required>
+                            @error('price') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Harga Diskon (Opsional)</label>
+                            <input type="number" name="discount_price"
+                                class="form-control @error('discount_price') is-invalid @enderror"
+                                value="{{ old('discount_price') }}" min="0">
+                            @error('discount_price') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Stok</label>
+                            <input type="number" name="stock" class="form-control @error('stock') is-invalid @enderror"
+                                value="{{ old('stock') }}" min="0" required>
+                            @error('stock') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
+
+                    <div class="mb-4 col-md-4">
+                        <label class="form-label fw-semibold">Berat (gram)</label>
+                        <input type="number" name="weight" class="form-control @error('weight') is-invalid @enderror"
+                            value="{{ old('weight') }}" min="1" required>
+                        @error('weight') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+
+                    {{-- ================= IMAGES ================= --}}
+                    <h6 class="fw-bold mb-3 text-muted">
+                        <i class="bi bi-images me-1"></i> Gambar Produk
+                    </h6>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Upload Gambar</label>
+                        <input type="file" name="images[]" class="form-control @error('images') is-invalid @enderror"
+                            multiple>
+                        <small class="text-muted">
+                            Maksimal 10 gambar. JPG, PNG, WEBP. Maks 2MB per file.
+                        </small>
+                        @error('images') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        @error('images.*') <div class="text-danger small">{{ $message }}</div> @enderror
+                    </div>
+
+                    {{-- ================= STATUS ================= --}}
+                    <h6 class="fw-bold mb-3 text-muted">
+                        <i class="bi bi-toggle-on me-1"></i> Status Produk
+                    </h6>
+
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="is_active" value="1" {{
+                                    old('is_active', true) ? 'checked' : '' }}>
+                                <label class="form-check-label fw-semibold">Aktif</label>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="stock" class="form-label">Stok <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control @error('stock') is-invalid @enderror"
-                                       id="stock" name="stock" value="{{ old('stock', 0) }}" min="0" required>
-                                @error('stock')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+
+                        <div class="col-md-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="is_featured" value="1" {{
+                                    old('is_featured') ? 'checked' : '' }}>
+                                <label class="form-check-label fw-semibold">Produk Unggulan</label>
                             </div>
                         </div>
                     </div>
 
-                    {{-- Status --}}
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1"
-                                   {{ old('is_active', true) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="is_active">
-                                Produk Aktif (tampil di katalog)
-                            </label>
-                        </div>
-                    </div>
-
-                    {{-- Gambar Produk --}}
-                    <div class="mb-3">
-                        <label for="images" class="form-label">Gambar Produk</label>
-                        <input type="file" class="form-control @error('images') is-invalid @enderror"
-                               id="images" name="images[]" multiple accept="image/*">
-                        <div class="form-text">
-                            Pilih satu atau lebih gambar. Gambar pertama akan dijadikan thumbnail utama.
-                        </div>
-                        @error('images')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    {{-- Tombol Aksi --}}
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left me-1"></i> Kembali
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-lg me-1"></i> Simpan Produk
+                    {{-- SUBMIT --}}
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save me-1"></i> Simpan Produk
                         </button>
                     </div>
+
                 </form>
+
             </div>
         </div>
     </div>

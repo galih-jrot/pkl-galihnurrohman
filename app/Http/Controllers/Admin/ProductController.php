@@ -171,6 +171,12 @@ class ProductController extends Controller
      */
     public function destroy(Product $product): RedirectResponse
     {
+        // Cek apakah produk sudah ada dalam pesanan (order_items)
+        // Jika ya, jangan izinkan penghapusan untuk menjaga integritas data pesanan
+        if ($product->orderItems()->exists()) {
+            return back()->with('error', 'Produk tidak dapat dihapus karena sudah ada dalam pesanan. Hapus pesanan terkait terlebih dahulu jika diperlukan.');
+        }
+
         try {
             // Loop dan hapus semua file gambar fisik dari server.
             foreach ($product->images as $image) {

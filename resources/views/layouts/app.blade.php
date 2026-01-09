@@ -4,12 +4,12 @@
      ================================================ --}}
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
 
-   <!-- ... meta tags ... -->
 
-
+  @vite(['resources/css/app.css', 'resources/js/app.js']) {{-- Stack untuk
+    script tambahan dari child view --}} @stack('scripts')
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,38 +34,7 @@
     {{-- Stack untuk CSS tambahan per halaman --}}
     @stack('styles')
 </head>
-
-<body>
-   <!-- ... content ... -->
-
-    {{-- ============================================
-         NAVBAR
-         ============================================ --}}
-    @include('partials.navbar')
-
-    {{-- ============================================
-         FLASH MESSAGES
-         ============================================ --}}
-    <div class="container mt-3">
-        @include('partials.flash-messages')
-    </div>
-
-    {{-- ============================================
-         MAIN CONTENT
-         ============================================ --}}
-    <main class="min-vh-100">
-        @yield('content')
-    </main>
-
-    {{-- ============================================
-         FOOTER
-         ============================================ --}}
-    @include('partials.footer')
-
-    {{-- Stack untuk JS tambahan per halaman --}}
-    @stack('scripts')
-
-    <script>
+<script>
   /**
    * Fungsi AJAX untuk Toggle Wishlist
    * Menggunakan Fetch API (Modern JS) daripada jQuery.
@@ -133,5 +102,32 @@
     }
   }
 </script>
+<body>
+    {{-- ============================================
+         NAVBAR
+         ============================================ --}}
+    @include('partials.navbar')
+
+    {{-- ============================================
+         FLASH MESSAGES
+         ============================================ --}}
+    <div class="container mt-3">
+        @include('partials.flash-messages')
+    </div>
+
+    {{-- ============================================
+         MAIN CONTENT
+         ============================================ --}}
+    <main class="min-vh-100">
+        @yield('content')
+    </main>
+
+    {{-- ============================================
+         FOOTER
+         ============================================ --}}
+    @include('partials.footer')
+
+    {{-- Stack untuk JS tambahan per halaman --}}
+    @stack('scripts')
 </body>
 </html>

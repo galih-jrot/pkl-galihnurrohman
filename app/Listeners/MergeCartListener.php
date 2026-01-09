@@ -1,11 +1,8 @@
 <?php
-
 namespace App\Listeners;
 
-use App\Services\CartService;
+use App\Listeners\MergeCartListener;
 use Illuminate\Auth\Events\Login;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class MergeCartListener
 {
@@ -20,11 +17,15 @@ class MergeCartListener
     /**
      * Handle the event.
      */
-    public function handle(Login $event): void
+    public function handle(object $event): void
     {
         // event->user adalah user yang baru login
-        $cartService = new CartService();
+        $cartService = new \App\Services\CartService();
         $cartService->mergeCartOnLogin();
-
     }
+    protected $listen = [
+        Login::class => [
+            MergeCartListener::class,
+        ],
+    ];
 }

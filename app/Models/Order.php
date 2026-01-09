@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,30 +12,15 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'order_number',
-        'status',
-        'payment_status',
-        'shipping_name',
-        'shipping_address',
-        'shipping_phone',
         'total_amount',
         'shipping_cost',
-        'snap_token',
+        'status',
+        'payment_status',
+        'snap_token', // <--- Tambahkan baris ini!
+        'shipping_name',
+        'shipping_phone',
+        'shipping_address',
     ];
-
-    protected $casts = [
-        'total_amount' => 'decimal:2',
-    ];
-
-    // Relationships
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
 
     public function items()
     {
@@ -46,5 +30,10 @@ class Order extends Model
     public function payment()
     {
         return $this->hasOne(Payment::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

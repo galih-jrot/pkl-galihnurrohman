@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -10,17 +9,12 @@ class OrderItem extends Model
         'order_id',
         'product_id',
         'product_name',
-        'quantity',
         'price',
+        'quantity',
         'subtotal',
     ];
 
-    protected $casts = [
-        'price' => 'decimal:2',
-        'subtotal' => 'decimal:2',
-    ];
-
-    // Relationships
+    // ==================== RELATIONSHIPS ====================
     public function order()
     {
         return $this->belongsTo(Order::class);
@@ -30,4 +24,5 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
 }

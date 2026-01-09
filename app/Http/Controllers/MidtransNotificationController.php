@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Events\OrderPaidEvent;
 
-
 class MidtransNotificationController extends Controller
 {
     /**
@@ -40,7 +39,7 @@ class MidtransNotificationController extends Controller
         $transactionId     = $payload['transaction_id'] ?? null;
 
         // 3. Validasi Field Wajib
-        if (! $orderId || ! $transactionStatus || ! $signatureKey) {
+        if (!$orderId || !$transactionStatus || !$signatureKey) {
             Log::warning('Midtrans Notification: Missing required fields', $payload);
             return response()->json(['message' => 'Invalid payload'], 400);
         }
@@ -73,7 +72,7 @@ class MidtransNotificationController extends Controller
         // 5. Cari Order di Database
         $order = Order::where('order_number', $orderId)->first();
 
-        if (! $order) {
+        if (!$order) {
             Log::warning("Midtrans Notification: Order not found", ['order_id' => $orderId]);
             return response()->json(['message' => 'Order not found'], 404);
         }
@@ -133,14 +132,13 @@ class MidtransNotificationController extends Controller
                 break;
 
             case 'expire':
+                // Token expired (tidak dibayar tepat waktu)
+                $this->handleFailed($order, $payment, 'Pembayaran kadaluarsa');
+                break;
+
             case 'cancel':
-                if ($order->status !== 'cancelled') {
-                    // Restock Logic
-                    foreach ($order->items as $item) {
-                        $item->product->increment('stock', $item->quantity);
-                    }
-                    $order->update(['payment_status' => 'failed', 'status' => 'cancelled']);
-                }
+                // Dibatalkan user/admin
+                $this->handleFailed($order, $payment, 'Pembayaran dibatalkan');
                 break;
 
             case 'refund':
@@ -171,6 +169,7 @@ class MidtransNotificationController extends Controller
         // Update Order
         $order->update([
             'status' => 'processing', // Siap diproses/dikirim
+            'payment_status' => 'paid', // Tandai sudah dibayar
         ]);
 
         // Update Payment
@@ -181,8 +180,8 @@ class MidtransNotificationController extends Controller
             ]);
         }
 
-        // TODO: Kirim email konfirmasi pembayaran
-        // event(new PaymentSuccessful($order));
+        // Trigger event untuk kirim email konfirmasi pembayaran
+        event(new OrderPaidEvent($order));
     }
 
     /**
@@ -219,13 +218,12 @@ class MidtransNotificationController extends Controller
         // ============================================================
         // RESTOCK LOGIC (Kembalikan stok produk)
         // ============================================================
-        foreach ($order->items as $item) {
+        foreach ($order->orderItems as $item) {
             $item->product?->increment('stock', $item->quantity);
         }
 
         // TODO: Kirim email notifikasi pembayaran gagal
     }
-
 
     /**
      * Handle refund.
@@ -239,14 +237,5 @@ class MidtransNotificationController extends Controller
         }
 
         // TODO: Logic tambahan untuk refund
-    }
-
-    private function setSuccess(Order $order)
-    {
-       
-          $order->update(...);
-
-    // Fire & Forget
-    event(new OrderPaidEvent($order));
     }
 }

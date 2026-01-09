@@ -24,7 +24,7 @@ class SalesReportExport implements FromQuery, WithHeadings, WithMapping, WithSty
     public function query()
     {
         return Order::query()
-            ->with(['user', 'items'])
+            ->with(['user', 'orderItems'])
             ->whereDate('created_at', '>=', $this->dateFrom)
             ->whereDate('created_at', '<=', $this->dateTo)
             ->where('payment_status', 'paid')
@@ -58,7 +58,7 @@ class SalesReportExport implements FromQuery, WithHeadings, WithMapping, WithSty
             $order->created_at->format('d/m/Y H:i'), // Format tanggal Excel friendly
             $order->user->name,
             $order->user->email,
-            $order->items->sum('quantity'),
+            $order->orderItems->sum('quantity'),
             $order->total_amount, // Biarkan angka murni agar bisa dijumlah di Excel
             ucfirst($order->status),
         ];

@@ -1,5 +1,4 @@
 <?php
-
 // app/Listeners/SendOrderPaidEmail.php
 
 namespace App\Listeners;

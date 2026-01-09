@@ -1,132 +1,186 @@
-{{-- ================================================
-     FILE: resources/views/admin/categories/index.blade.php
-     FUNGSI: Halaman daftar kategori admin
-     ================================================ --}}
-
+{{-- resources/views/admin/categories/index.blade.php --}}
 @extends('layouts.admin')
 
-@section('title', 'Kelola Kategori')
-@section('page-title', 'Kelola Kategori')
+@section('title', 'Manajemen Kategori')
 
 @section('content')
 <div class="row">
-    <div class="col-12">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">Daftar Kategori</h6>
-                <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle me-2"></i>Tambah Kategori
-                </a>
+    <div class="col-lg-8">
+        {{-- Flash Message --}}
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-            <div class="card-body">
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
 
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-primary fw-bold">Daftar Kategori</h5>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                    <i class="bi bi-plus-lg"></i> Tambah Baru
+                </button>
+            </div>
+            <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Gambar</th>
-                                <th>Nama Kategori</th>
-                                <th>Deskripsi</th>
-                                <th>Jumlah Produk</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
+                                <th class="ps-4">Nama Kategori</th>
+                                <th class="text-center">Produk</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-end pe-4">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($categories as $category)
-                                <tr>
-                                    <td>
-                                        @if($category->image)
-                                            <img src="{{ Storage::url($category->image) }}"
-                                                 alt="{{ $category->name }}"
-                                                 class="rounded"
-                                                 width="50" height="50"
-                                                 style="object-fit: cover;">
-                                        @else
-                                            <div class="bg-light rounded d-flex align-items-center justify-content-center"
-                                                 style="width: 50px; height: 50px;">
-                                                <i class="bi bi-image text-muted"></i>
+                                <tr style="height: 60px;">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            @if($category->image)
+                                                <img src="{{ Storage::url($category->image) }}" class="rounded me-2" width="40" height="40">
+                                            @else
+                                                <div class="bg-light rounded d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                                    <i class="bi bi-image text-muted"></i>
+                                                </div>
+                                            @endif
+                                            <div>
+                                                <div class="fw-bold">{{ $category->name }}</div>
+                                                <small class="text-muted">{{ $category->slug }}</small>
                                             </div>
-                                        @endif
+                                        </div>
                                     </td>
-                                    <td>
-                                        <strong>{{ $category->name }}</strong>
-                                        <br>
-                                        <small class="text-muted">{{ $category->slug }}</small>
+                                    <td class="text-center">
+                                        <span class="badge bg-info text-dark">{{ $category->products_count }}</span>
                                     </td>
-                                    <td>{{ Str::limit($category->description, 50) }}</td>
-                                    <td>
-                                        <span class="badge bg-info">{{ $category->products_count }}</span>
-                                    </td>
-                                    <td>
+                                    <td class="text-center">
                                         @if($category->is_active)
                                             <span class="badge bg-success">Aktif</span>
                                         @else
-                                            <span class="badge bg-secondary">Tidak Aktif</span>
+                                            <span class="badge bg-secondary">Non-Aktif</span>
                                         @endif
                                     </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.categories.show', $category) }}"
-                                               class="btn btn-sm btn-outline-info"
-                                               title="Lihat Detail">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a href="{{ route('admin.categories.edit', $category) }}"
-                                               class="btn btn-sm btn-outline-warning"
-                                               title="Edit">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            @if($category->products_count == 0)
-                                                <form action="{{ route('admin.categories.destroy', $category) }}"
-                                                      method="POST"
-                                                      class="d-inline"
-                                                      onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                            class="btn btn-sm btn-outline-danger"
-                                                            title="Hapus">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        </div>
+                                    <td class="text-end pe-4">
+                                        <button
+                                            class="btn btn-sm btn-outline-warning me-1 btn-edit"
+                                            data-id="{{ $category->id }}"
+                                            data-name="{{ $category->name }}"
+                                            data-active="{{ $category->is_active }}"
+                                            data-action="{{ route('admin.categories.update', $category) }}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editCategoryModal"
+                                        >
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" class="d-inline"
+                                              onsubmit="return confirm('Yakin hapus kategori ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">
-                                        <i class="bi bi-folder-x fs-1 d-block mb-2"></i>
-                                        Belum ada kategori
-                                    </td>
+                                    <td colspan="4" class="text-center py-4 text-muted">Belum ada kategori.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
-
-                {{-- Pagination --}}
-                @if($categories->hasPages())
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $categories->links() }}
-                    </div>
-                @endif
+            </div>
+            <div class="card-footer bg-white">
+                {{ $categories->links() }}
             </div>
         </div>
     </div>
 </div>
+
+{{-- CREATE MODAL --}}
+<div class="modal fade" id="createModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form class="modal-content" action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Kategori Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Nama Kategori <span class="text-danger">*</span></label>
+                    <input type="text" name="name" class="form-control" required placeholder="Misal: Elektronik">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Gambar Cover</label>
+                    <input type="file" name="image" class="form-control">
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="is_active" value="1" checked>
+                    <label class="form-check-label">Langsung Aktifkan</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan Kategori</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- Edit Modal per Loop Item --}}
+<div class="modal fade" id="editCategoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog">
+        <form class="modal-content" method="POST" enctype="multipart/form-data" id="editCategoryForm">
+            @csrf
+            @method('PUT')
+
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Kategori</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Nama</label>
+                    <input type="text" name="name" id="edit-name" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Gambar (Opsional)</label>
+                    <input type="file" name="image" class="form-control">
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="is_active" id="edit-active" value="1">
+                    <label class="form-check-label">Aktif</label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    {{-- Edit Modal Script --}}
+    <script>
+        document.querySelectorAll('.btn-edit').forEach(button => {
+            button.addEventListener('click', function () {
+                document.getElementById('edit-name').value = this.dataset.name;
+                document.getElementById('edit-active').checked = this.dataset.active == 1;
+                document.getElementById('editCategoryForm').action = this.dataset.action;
+            });
+        });
+    </script>
+
 @endsection

@@ -30,7 +30,7 @@ class GoogleController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function redirectToGoogle()
+    public function redirect()
     {
         // ================================================
         // MEMBANGUN URL REDIRECT KE GOOGLE
@@ -67,7 +67,7 @@ class GoogleController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function handleGoogleCallback()
+    public function callback()
     {
         // ================================================
         // CEK JIKA USER MEMBATALKAN LOGIN

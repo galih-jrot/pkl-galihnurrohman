@@ -105,7 +105,7 @@ class CategoryController extends Controller
             // Jika tidak dikecualikan, Laravel akan menganggap nama ini duplikat (karena sudah ada di DB milik record ini sendiri).
             'name'        => 'required|string|max:100|unique:categories,name,' . $category->id,
             'description' => 'nullable|string|max:500',
-            'image'       => 'nullable|image|max:1024',
+            'image'       => 'nullable|image|mimes:jpg,png,gif',
             'is_active'   => 'boolean',
         ]);
 

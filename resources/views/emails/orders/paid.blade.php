@@ -9,7 +9,7 @@ Kami sedang memproses pesanan Anda.
 <x-mail::table>
 | Produk | Qty | Harga |
 |:-------|:---:|:------|
-@foreach($order->items as $item)
+@foreach($order->orderItems as $item)
 | {{ $item->product_name }} | {{ $item->quantity }} | Rp {{ number_format($item->price, 0, ',', '.') }} |
 @endforeach
 | **Total** | | **Rp {{ number_format($order->total_amount, 0, ',', '.') }}** |

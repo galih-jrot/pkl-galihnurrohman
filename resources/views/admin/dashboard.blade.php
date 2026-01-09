@@ -1,89 +1,91 @@
-{{-- ================================================
-     FILE: resources/views/admin/dashboard.blade.php
-     FUNGSI: Halaman dashboard admin dengan statistik dan data real-time
-     ================================================ --}}
-
 @extends('layouts.admin')
 
-@section('title', 'Dashboard')
-@section('page-title', 'Dashboard')
+@section('title', 'Dashboard Admin')
 
 @section('content')
-<div class="row g-4">
-    {{-- Statistik Cards --}}
-    <div class="col-12">
-        <div class="row g-3">
-            {{-- Total Revenue --}}
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="bg-success bg-opacity-10 p-3 rounded">
-                                    <i class="bi bi-currency-dollar text-success fs-4"></i>
-                                </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h3 mb-4 text-gray-800">Dashboard Admin</h1>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Pendapatan
                             </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="card-title mb-1 text-muted">Total Pendapatan</h6>
-                                <h4 class="mb-0 text-success">Rp {{ number_format($stats['total_revenue'], 0, ',', '.') }}</h4>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                Rp {{ number_format($stats['total_revenue'], 0, ',', '.') }}
                             </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            {{-- Total Orders --}}
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="bg-primary bg-opacity-10 p-3 rounded">
-                                    <i class="bi bi-receipt text-primary fs-4"></i>
-                                </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Pesanan
                             </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="card-title mb-1 text-muted">Total Pesanan</h6>
-                                <h4 class="mb-0 text-primary">{{ number_format($stats['total_orders']) }}</h4>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ $stats['total_orders'] }}
                             </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            {{-- Pending Orders --}}
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="bg-warning bg-opacity-10 p-3 rounded">
-                                    <i class="bi bi-clock text-warning fs-4"></i>
-                                </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Pesanan Pending
                             </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="card-title mb-1 text-muted">Pesanan Pending</h6>
-                                <h4 class="mb-0 text-warning">{{ number_format($stats['pending_orders']) }}</h4>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ $stats['pending_orders'] }}
                             </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            {{-- Total Products --}}
-            <div class="col-md-3">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="bg-info bg-opacity-10 p-3 rounded">
-                                    <i class="bi bi-box-seam text-info fs-4"></i>
-                                </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Stok Rendah
                             </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="card-title mb-1 text-muted">Total Produk</h6>
-                                <h4 class="mb-0 text-info">{{ number_format($stats['total_products']) }}</h4>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ $stats['low_stock'] }}
                             </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -91,171 +93,107 @@
         </div>
     </div>
 
-    {{-- Additional Stats --}}
-    <div class="col-12">
-        <div class="row g-3">
-            {{-- Total Customers --}}
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="bg-secondary bg-opacity-10 p-3 rounded">
-                                    <i class="bi bi-people text-secondary fs-4"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="card-title mb-1 text-muted">Total Pelanggan</h6>
-                                <h4 class="mb-0 text-secondary">{{ number_format($stats['total_customers']) }}</h4>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Charts and Tables -->
+    <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Pendapatan 7 Hari Terakhir</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart"></canvas>
                 </div>
             </div>
+        </div>
 
-            {{-- Low Stock Alert --}}
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="bg-danger bg-opacity-10 p-3 rounded">
-                                    <i class="bi bi-exclamation-triangle text-danger fs-4"></i>
-                                </div>
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Produk Terlaris</h6>
+                </div>
+                <div class="card-body">
+                    @foreach($topProducts as $product)
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="mr-3">
+                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-fluid rounded" style="width: 50px; height: 50px;">
                             </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="card-title mb-1 text-muted">Stok Rendah (≤5)</h6>
-                                <h4 class="mb-0 text-danger">{{ number_format($stats['low_stock']) }}</h4>
-                                @if($stats['low_stock'] > 0)
-                                    <small class="text-danger">Perlu restock segera!</small>
-                                @endif
+                            <div>
+                                <div class="font-weight-bold">{{ $product->name }}</div>
+                                <div class="text-muted small">Terjual: {{ $product->sold }}</div>
                             </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Charts and Tables --}}
-    <div class="col-lg-8">
-        {{-- Revenue Chart --}}
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white">
-                <h6 class="mb-0">Pendapatan 7 Hari Terakhir</h6>
-            </div>
-            <div class="card-body">
-                <canvas id="revenueChart" width="100%" height="300"></canvas>
-            </div>
-        </div>
-
-        {{-- Recent Orders --}}
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">Pesanan Terbaru</h6>
-                <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>No. Pesanan</th>
-                                <th>Pelanggan</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Tanggal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($recentOrders as $order)
+    <!-- Recent Orders -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Pesanan Terbaru</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <a href="{{ route('admin.orders.show', $order) }}" class="text-decoration-none">
-                                            {{ $order->order_number }}
-                                        </a>
-                                    </td>
-                                    <td>{{ $order->user->name ?? 'N/A' }}</td>
-                                    <td>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
-                                    <td>
-                                        @include('components.order-status-badge', ['status' => $order->status])
-                                    </td>
-                                    <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                                    <th>ID Pesanan</th>
+                                    <th>Customer</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Tanggal</th>
+                                    <th>Aksi</th>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">
-                                        Belum ada pesanan
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach($recentOrders as $order)
+                                    <tr>
+                                        <td>{{ $order->id }}</td>
+                                        <td>{{ $order->user->name }}</td>
+                                        <td>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
+                                        <td>
+                                            <span class="badge badge-{{ $order->status == 'completed' ? 'success' : ($order->status == 'pending' ? 'warning' : 'info') }}">
+                                                {{ ucfirst($order->status) }}
+                                            </span>
+                                        </td>
+                                        <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                                        <td>
+                                            <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-primary">Lihat</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Top Products --}}
-    <div class="col-lg-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">Produk Terlaris</h6>
-                <a href="{{ route('admin.products.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
-            </div>
-            <div class="card-body p-0">
-                @forelse($topProducts as $product)
-                    <div class="d-flex align-items-center p-3 border-bottom">
-                        <img src="{{ $product->image_url }}"
-                             class="rounded me-3"
-                             width="50" height="50"
-                             style="object-fit: cover;">
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1">{{ Str::limit($product->name, 30) }}</h6>
-                            <small class="text-muted">{{ $product->sold }} terjual</small>
-                        </div>
-                        <div class="text-end">
-                            <div class="fw-bold text-success">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="text-center text-muted py-4">
-                        Belum ada produk terjual
-                    </div>
-                @endforelse
             </div>
         </div>
     </div>
 </div>
-@endsection
 
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Revenue Chart
     const ctx = document.getElementById('revenueChart').getContext('2d');
     const revenueData = @json($revenueChart);
 
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: revenueData.map(item => {
-                const date = new Date(item.date);
-                return date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
-            }),
+            labels: revenueData.map(item => item.date),
             datasets: [{
-                label: 'Pendapatan (Rp)',
+                label: 'Pendapatan',
                 data: revenueData.map(item => item.total),
-                borderColor: '#0d6efd',
-                backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                tension: 0.4,
+                borderColor: 'rgba(78, 115, 223, 1)',
+                backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                borderWidth: 2,
                 fill: true
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true,
@@ -265,14 +203,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                 }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                }
             }
         }
     });
 });
 </script>
-@endpush
+@endsection

@@ -1,3 +1,4 @@
+
 {{-- resources/views/profile/edit.blade.php --}}
 
 @extends('layouts.app')
@@ -47,32 +48,7 @@
                 </div>
             </div>
 
-            {{-- 5. Admin Access --}}
-            @if($user->isAdmin())
-            <div class="card mb-4 border-primary">
-                <div class="card-header bg-primary text-white fw-bold">Akses Admin</div>
-                <div class="card-body">
-                    <p>Anda memiliki akses admin. Klik tombol di bawah untuk masuk ke panel admin.</p>
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Masuk ke Admin</a>
-                </div>
-            </div>
-            @endif
-
-            {{-- 6. Logout --}}
-            <div class="card border-warning">
-                <div class="card-header bg-warning text-dark fw-bold">Logout</div>
-                <div class="card-body">
-                    <p>Klik tombol di bawah untuk keluar dari akun Anda.</p>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-warning">
-                            <i class="bi bi-box-arrow-right me-2"></i> Logout
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            {{-- 7. Delete Account --}}
+            {{-- 5. Delete Account --}}
             <div class="card border-danger">
                 <div class="card-header bg-danger text-white fw-bold">Hapus Akun</div>
                 <div class="card-body">

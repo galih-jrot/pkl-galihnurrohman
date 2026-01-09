@@ -1,52 +1,70 @@
 <?php
+// app/Http/Controllers/OrderController.php
 
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class OrderController extends Controller
 {
-    public function index(): View
+    /**
+     * Menampilkan daftar pesanan milik user yang sedang login.
+     */
+    public function index()
     {
-        $orders = auth()->user()->orders()->with(['orderItems.product'])->latest()->paginate(10);
+        // PENTING: Jangan gunakan Order::all() !
+        // Kita hanya mengambil order milik user yg sedang login menggunakan relasi hasMany.
+        // auth()->user()->orders() akan otomatis memfilter: WHERE user_id = current_user_id
+        $orders = auth()->user()->orders()
+            ->with(['items.product']) // Eager Load nested: Order -> OrderItems -> Product
+            ->latest()                // Urutkan dari pesanan terbaru
+            ->paginate(10);
 
         return view('orders.index', compact('orders'));
     }
 
-    public function show(Order $order): View
+    /**
+     * Menampilkan detail satu pesanan.
+     */
+    public function show(Order $order)
     {
-        // Pastikan user hanya bisa lihat order miliknya sendiri
-        if ($order->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $order->load(['items', 'user']);
 
-        $order->load(['orderItems.product', 'user']);
+        $snapToken = $order->snap_token; // ambil dulu dari DB
 
-        // Generate snap token jika order masih pending dan belum dibayar
-        $snapToken = null;
-        if ($order->status === 'pending' && $order->payment_status === 'unpaid') {
-            try {
-                $midtransService = app(\App\Services\MidtransService::class);
-                $snapToken = $midtransService->createSnapToken($order);
+        if ($order->status === 'pending' && ! $snapToken) {
+                                                              // Generate baru jika belum ada
+            $midtrans  = new \App\Services\MidtransService(); // atau inject
+            $snapToken = $midtrans->createSnapToken($order);
 
-                // Simpan snap token ke database jika belum ada
-                if (!$order->snap_token) {
-                    $order->update(['snap_token' => $snapToken]);
-                } else {
-                    // Gunakan yang sudah ada jika sudah tersimpan
-                    $snapToken = $order->snap_token;
-                }
-            } catch (\Exception $e) {
-                // Log error tapi jangan hentikan halaman
-                logger()->error('Failed to generate snap token', [
-                    'order_id' => $order->id,
-                    'error' => $e->getMessage()
-                ]);
+            if ($snapToken) {
+                // SIMPAN KE DATABASE — INI YANG PALING PENTING!
+                $order->update(['snap_token' => $snapToken]);
             }
         }
 
         return view('orders.show', compact('order', 'snapToken'));
+    }
+
+    /**
+     * Menampilkan halaman status pembayaran sukses.
+     */
+    public function success(Order $order)
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke pesanan ini.');
+        }
+        return view('orders.success', compact('order'));
+    }
+
+    /**
+     * Menampilkan halaman status pembayaran pending.
+     */
+    public function pending(Order $order)
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke pesanan ini.');
+        }
+        return view('orders.pending', compact('order'));
     }
 }
