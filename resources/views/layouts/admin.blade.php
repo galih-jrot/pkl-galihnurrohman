@@ -37,6 +37,7 @@
         }
     </style>
     @stack('styles')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-light">
     <div class="d-flex">

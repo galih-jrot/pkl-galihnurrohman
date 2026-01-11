@@ -11,7 +11,7 @@
                 <h5 class="mb-0 fw-bold">Item Pesanan</h5>
             </div>
             <div class="card-body">
-                @foreach($order->orderItems as $item)
+                @foreach($order->items as $item)
                     <div class="d-flex mb-3">
                         <img src="{{ $item->product->image_url }}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
                         <div class="flex-grow-1">

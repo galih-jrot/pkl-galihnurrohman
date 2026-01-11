@@ -8,54 +8,173 @@
 @section('title', 'Beranda')
 
 @section('content')
+<style>
+.hero {
+    background: linear-gradient(135deg, #2563eb, #6366f1);
+    color: white;
+    padding: 80px 20px;
+    border-radius: 0 0 40px 40px;
+}
+.hero h1 {
+    font-weight: 700;
+}
+.hero p {
+    opacity: .9;
+}
+.btn-primary {
+    background: white;
+    color: #2563eb;
+    border-radius: 999px;
+    padding: 12px 26px;
+    font-weight: 600;
+    transition: all .3s ease;
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,.15);
+}
+.btn-primary:active {
+    transform: scale(.96);
+}
+.promo-card {
+    border-radius: 18px;
+    padding: 20px;
+    color: white;
+    transition: .3s;
+}
+.promo-yellow {
+    background: linear-gradient(135deg, #f59e0b, #facc15);
+}
+.promo-blue {
+    background: linear-gradient(135deg, #06b6d4, #2563eb);
+}
+.promo-card:hover {
+    transform: translateY(-4px);
+}
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+button, a {
+    transition: all .2s ease;
+}
+/* SECTION */
+.category-section {
+    padding: 60px 20px;
+    background: #fff;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 40px;
+}
+
+/* GRID */
+.category-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+}
+
+/* CARD */
+.category-card {
+    background: #ffffff;
+    border-radius: 16px;
+    text-decoration: none;
+    color: #111;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+/* IMAGE FIX (INI KUNCI UTAMA) */
+.category-image {
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+}
+
+.category-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 🔥 PENYELAMAT LAYOUT */
+    display: block;
+}
+
+/* BODY */
+.category-body {
+    padding: 16px;
+    text-align: center;
+}
+
+.category-body h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-transform: capitalize;
+}
+
+.category-body span {
+    display: inline-block;
+    font-size: 13px;
+    color: #555;
+    background: #f1f3f5;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+</style>
     {{-- Hero Section --}}
-    <section class="bg-primary text-white py-5">
+    <section class="hero">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <h1 class="display-4 fw-bold mb-3">
-                        Belanja Online Mudah & Terpercaya
+                        Selamat datang di kantin Galih
                     </h1>
                     <p class="lead mb-4">
                         Temukan berbagai produk berkualitas dengan harga terbaik.
                         Gratis ongkir untuk pembelian pertama!
                     </p>
-                    <a href="{{ route('catalog.index') }}" class="btn btn-light btn-lg">
+                    <a href="{{ route('catalog.index') }}" class="btn btn-primary btn-lg">
                         <i class="bi bi-bag me-2"></i>Mulai Belanja
                     </a>
                 </div>
                 <div class="col-lg-6 d-none d-lg-block text-center">
                     <img src="{{ asset('images/snack sekolah.png') }}"
-                         alt="Shopping" class="img-fluid" style="max-height: 350px;">
+                         alt="Shopping" class="img-fluid" style="max-height: 400px;">
                 </div>
             </div>
         </div>
     </section>
 
     {{-- Kategori --}}
-    <section class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-4">Kategori Populer</h2>
-            <div class="row g-4">
-                @foreach($categories as $category)
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <a href="{{ route('catalog.index', ['category' => $category->slug]) }}"
-                           class="text-decoration-none">
-                            <div class="card border-0 shadow-sm text-center h-100">
-                                <div class="card-body">
-                                    <img src="{{ $category->image_url }}"
-                                         alt="{{ $category->name }}"
-                                         class="rounded-circle mb-3"
-                                         width="80" height="80"
-                                         style="object-fit: cover;">
-                                    <h6 class="card-title mb-0">{{ $category->name }}</h6>
-                                    <small class="text-muted">{{ $category->products_count }} produk</small>
-                                </div>
-                            </div>
-                        </a>
+    <section class="category-section">
+        <h2 class="section-title">Kategori Populer</h2>
+
+        <div class="category-grid">
+            @foreach ($categories as $category)
+                <a href="{{ route('categories.show', $category->slug) }}" class="category-card">
+
+                    <div class="category-image">
+                        <img src="{{ asset('storage/' . $category->image) }}"
+                             alt="{{ $category->name }}">
                     </div>
-                @endforeach
-            </div>
+
+                    <div class="category-body">
+                        <h4>{{ $category->name }}</h4>
+                        <span>{{ $category->products_count }} Produk</span>
+                    </div>
+
+                </a>
+            @endforeach
         </div>
     </section>
 

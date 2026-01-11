@@ -3,6 +3,11 @@
 @section('title', 'Daftar Produk')
 
 @section('content')
+<style>
+td form {
+    display: inline;
+}
+</style>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="h3 text-gray-800">Daftar Produk</h2>
     <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
@@ -57,13 +62,33 @@
                     <td>Rp {{ number_format($product->price) }}</td>
                     <td>{{ $product->stock }}</td>
                     <td>
-                        <span class="badge bg-{{ $product->is_active ? 'success' : 'secondary' }}">
-                            {{ $product->is_active ? 'Aktif' : 'Nonaktif' }}
-                        </span>
+                        <form action="{{ route('admin.products.status', $product) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn btn-{{ $product->status === 'aktif' ? 'success' : 'secondary' }} btn-sm">
+                                {{ $product->status === 'aktif' ? 'Aktif' : 'Nonaktif' }}
+                            </button>
+                        </form>
                     </td>
-                    <td>
-                        <a href="{{ route('admin.products.show', $product) }}" class="btn btn-sm btn-info">Detail</a>
-                        <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <td class="text-center">
+                        <div class="d-inline-flex gap-1">
+                            <a href="{{ route('admin.products.show', $product) }}" class="btn btn-info btn-sm">
+                                Detail
+                            </a>
+
+                            <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
+
+                            <form action="{{ route('admin.products.destroy', $product) }}" method="POST"
+                                  onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @empty

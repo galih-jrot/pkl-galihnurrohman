@@ -1,4 +1,62 @@
-<div class="card product-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+<style>
+.product-card {
+    background: white;
+    border-radius: 16px;
+    padding: 14px;
+    transition: all .25s ease;
+    border: 1px solid #e5e7eb;
+}
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0,0,0,.08);
+}
+.product-card:active {
+    transform: scale(.98);
+}
+.product-card img {
+    border-radius: 12px;
+    transition: .3s;
+}
+.product-card:hover img {
+    transform: scale(1.05);
+}
+.btn-cart {
+    background: #2563eb;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: 600;
+    transition: all .25s ease;
+}
+.btn-cart:hover {
+    background: #1e40af;
+    box-shadow: 0 8px 20px rgba(37,99,235,.4);
+}
+.btn-cart:active {
+    transform: scale(.95);
+}
+.wishlist {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: white;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .3s;
+}
+.wishlist:hover {
+    background: #fee2e2;
+    color: #ef4444;
+}
+.wishlist:active {
+    transform: scale(.9);
+}
+</style>
+<div class="product-card h-100 overflow-hidden">
 
     {{-- Product Image --}}
     <div class="position-relative bg-light">
@@ -77,7 +135,7 @@
             <input type="hidden" name="quantity" value="1">
 
             <button type="submit"
-                    class="btn btn-primary btn-sm w-100 rounded-pill"
+                    class="btn btn-cart w-100"
                     @if($product->stock == 0) disabled @endif>
                 <i class="bi bi-cart-plus me-1"></i>
                 {{ $product->stock == 0 ? 'Stok Habis' : 'Tambah Keranjang' }}

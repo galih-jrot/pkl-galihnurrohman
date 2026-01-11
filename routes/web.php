@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MidtransNotificationController;
@@ -28,11 +29,13 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::view('/tentang', 'tentang');
 
 Route::get('/sapa/{nama}', fn($nama) => "Halo, $nama! Selamat datang di Toko Online Raihan.");
-Route::get('/kategori/{nama?}', fn($nama = 'Semua') => "Menampilkan kategori: $nama");
 
 // Catalog
 Route::get('/products', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/products/{slug}', [CatalogController::class, 'show'])->name('catalog.show');
+
+// Categories
+Route::get('/kategori/{slug}', [CategoryController::class, 'show'])->name('categories.show');
 
 // ================================
 // AUTH ROUTES (Laravel default)
@@ -56,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
+        Route::patch('/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
         Route::put('/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
         Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
         Route::delete('/avatar', [ProfileController::class, 'destroyAvatar'])->name('profile.avatar.destroy');
@@ -114,12 +118,14 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Products & Categories
     Route::resource('products', AdminProductController::class);
+    Route::patch('products/{product}/status', [AdminProductController::class, 'updateStatus'])->name('products.status');
     Route::resource('categories', AdminCategoryController::class);
 
     // Orders
     Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::delete('orders/{order}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 
     // Reports
     Route::get('reports/sales', [ReportController::class, 'sales'])->name('reports.sales');

@@ -7,11 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // 1. Statistik Utama (Cards)
         // Kita menghitung data real-time dari database.
@@ -48,7 +49,7 @@ class DashboardController extends Controller
         // 3. Produk Terlaris
         // Tantangan: Menghitung total qty terjual dari tabel relasi (order_items)
         // Solusi: withCount dengan query modifikasi (SUM quantity)
-        $topProducts = Product::withCount(['orderItems as sold' => function ($q) {
+        $topProducts = Product::withCount(['items as sold' => function ($q) {
             // Kita hanya hitung item yang berasal dari order yang SUDAH DIBAYAR (paid)
             $q->select(DB::raw('SUM(quantity)'))
                 ->whereHas('order', function ($query) {
@@ -60,19 +61,35 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // 4. Data Grafik Pendapatan (7 Hari Terakhir)
-        // Kasus: Grouping data per tanggal
-        // Kita gunakan DB::raw untuk format tanggal dari timestamp 'created_at'
-        $revenueChart = Order::select([
-            DB::raw('DATE(created_at) as date'),   // Ambil tanggalnya saja (2024-12-10)
-            DB::raw('SUM(total_amount) as total'), // Total omset hari itu
-        ])
-            ->where('payment_status', 'paid')
-            ->where('created_at', '>=', now()->subDays(7)) // Filter 7 hari ke belakang
-            ->groupBy('date')                              // Kelompokkan baris berdasarkan tanggal
-            ->orderBy('date', 'asc')                       // Urutkan kronologis
-            ->get();
+        // 4. Data Grafik Pendapatan (Dinamis berdasarkan periode)
+        $periode = $request->periode ?? 7; // default 7 hari
 
-        return view('admin.dashboard', compact('stats', 'recentOrders', 'topProducts', 'revenueChart'));
+        if ($periode <= 30) {
+            // Untuk periode <= 30 hari, group by hari
+            $revenueChart = Order::select([
+                DB::raw('DATE(created_at) as date'),   // Ambil tanggalnya saja (2024-12-10)
+                DB::raw('SUM(total_amount) as total'), // Total omset hari itu
+            ])
+                ->where('status', 'completed')
+                ->where('created_at', '>=', now()->subDays($periode))
+                ->groupBy('date')
+                ->orderBy('date', 'asc')
+                ->get();
+        } else {
+            // Untuk periode > 30 hari, group by bulan
+            $revenueChart = Order::select([
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(total_amount) as total'),
+            ])
+                ->where('status', 'completed')
+                ->where('created_at', '>=', now()->subDays($periode))
+                ->groupBy('year', 'month')
+                ->orderBy('year', 'asc')
+                ->orderBy('month', 'asc')
+                ->get();
+        }
+
+        return view('admin.dashboard', compact('stats', 'recentOrders', 'topProducts', 'revenueChart', 'periode'));
     }
 }

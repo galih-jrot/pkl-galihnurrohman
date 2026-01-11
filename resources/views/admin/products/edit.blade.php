@@ -167,6 +167,22 @@
                                 <label class="form-check-label fw-semibold">Produk Unggulan</label>
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label fw-bold">Status Produk</label>
+
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           id="statusToggle"
+                                           {{ $product->status === 'aktif' ? 'checked' : '' }}>
+                                    <label class="form-check-label" id="statusLabel">
+                                        {{ ucfirst($product->status) }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -181,4 +197,24 @@
         </form>
     </div>
 </div>
+
+<script>
+document.getElementById('statusToggle').addEventListener('change', function () {
+    const status = this.checked ? 'aktif' : 'nonaktif';
+
+    fetch("{{ route('admin.products.status', $product->id) }}", {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ status })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('statusLabel').innerText =
+            status.charAt(0).toUpperCase() + status.slice(1);
+    });
+});
+</script>
 @endsection

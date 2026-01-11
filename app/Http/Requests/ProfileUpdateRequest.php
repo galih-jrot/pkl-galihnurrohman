@@ -14,9 +14,9 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Dalam konteks profil, semua user yang login boleh update profilnya sendiri.
+        // Dalam konteks profil, semua user yang login dan email sudah terverifikasi boleh update profilnya sendiri.
         // Route middleware 'auth' sudah menjamin user login.
-        return true;
+        return auth()->check() && auth()->user()->hasVerifiedEmail();
     }
 
     /**

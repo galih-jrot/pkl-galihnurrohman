@@ -24,7 +24,7 @@ class SalesReportExport implements FromQuery, WithHeadings, WithMapping, WithSty
     public function query()
     {
         return Order::query()
-            ->with(['user', 'orderItems'])
+            ->with(['user', 'items'])
             ->whereDate('created_at', '>=', $this->dateFrom)
             ->whereDate('created_at', '<=', $this->dateTo)
             ->where('payment_status', 'paid')

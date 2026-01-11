@@ -3,6 +3,45 @@
 @section('title', 'Dashboard Admin')
 
 @section('content')
+<style>
+.stat-card {
+    background: white;
+    border-left: 5px solid;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,.05);
+    transition: .3s;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+.stat-card i {
+    font-size: 32px;
+    opacity: .3;
+}
+.product-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+}
+.product-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #eee;
+}
+.table tbody tr:hover {
+    background: #f1f5f9;
+}
+.card {
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.05);
+}
+</style>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -11,84 +50,41 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="row">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Pendapatan
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Rp {{ number_format($stats['total_revenue'], 0, ',', '.') }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stat-card border-primary">
+                <div>
+                    <p>Total Pendapatan</p>
+                    <h4>Rp {{ number_format($stats['total_revenue'], 0, ',', '.') }}</h4>
                 </div>
+                <i class="bi bi-cash-stack"></i>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Total Pesanan
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $stats['total_orders'] }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-md-3">
+            <div class="stat-card border-success">
+                <div>
+                    <p>Total Pesanan</p>
+                    <h4>{{ $stats['total_orders'] }}</h4>
                 </div>
+                <i class="bi bi-bag-check"></i>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Pesanan Pending
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $stats['pending_orders'] }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clock fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-md-3">
+            <div class="stat-card border-warning">
+                <div>
+                    <p>Pesanan Pending</p>
+                    <h4>{{ $stats['pending_orders'] }}</h4>
                 </div>
+                <i class="bi bi-clock"></i>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Stok Rendah
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $stats['low_stock'] }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-md-3">
+            <div class="stat-card border-danger">
+                <div>
+                    <p>Stok Rendah</p>
+                    <h4>{{ $stats['low_stock'] }}</h4>
                 </div>
+                <i class="bi bi-exclamation-triangle"></i>
             </div>
         </div>
     </div>
@@ -97,11 +93,33 @@
     <div class="row">
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Pendapatan 7 Hari Terakhir</h6>
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        @if($periode == 1)
+                            Pendapatan 1 Hari Terakhir
+                        @elseif($periode == 7)
+                            Pendapatan 7 Hari Terakhir
+                        @elseif($periode == 30)
+                            Pendapatan Bulanan
+                        @else
+                            Pendapatan {{ $periode }} Hari Terakhir
+                        @endif
+                    </h6>
+                    <form method="GET" class="d-inline">
+                        <select name="periode" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="1" {{ $periode == 1 ? 'selected' : '' }}>1 Hari</option>
+                            <option value="7" {{ $periode == 7 ? 'selected' : '' }}>7 Hari</option>
+                            <option value="30" {{ $periode == 30 ? 'selected' : '' }}>Bulanan</option>
+                            <option value="365" {{ $periode == 365 ? 'selected' : '' }}>Tahunan</option>
+                        </select>
+                    </form>
                 </div>
                 <div class="card-body">
-                    <canvas id="revenueChart"></canvas>
+                    @if($revenueChart->sum('total') == 0)
+                        <p class="text-muted text-center mt-5">Belum ada pendapatan</p>
+                    @else
+                        <canvas id="revenueChart"></canvas>
+                    @endif
                 </div>
             </div>
         </div>
@@ -113,13 +131,11 @@
                 </div>
                 <div class="card-body">
                     @foreach($topProducts as $product)
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="mr-3">
-                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-fluid rounded" style="width: 50px; height: 50px;">
-                            </div>
+                        <div class="product-item">
+                            <img src="{{ $product->image ? asset('storage/'.$product->image) : asset('img/no-image.png') }}" alt="{{ $product->name }}">
                             <div>
-                                <div class="font-weight-bold">{{ $product->name }}</div>
-                                <div class="text-muted small">Terjual: {{ $product->sold }}</div>
+                                <strong>{{ $product->name }}</strong>
+                                <small>Terjual: {{ $product->sold }}</small>
                             </div>
                         </div>
                     @endforeach
@@ -155,13 +171,19 @@
                                         <td>{{ $order->user->name }}</td>
                                         <td>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
                                         <td>
-                                            <span class="badge badge-{{ $order->status == 'completed' ? 'success' : ($order->status == 'pending' ? 'warning' : 'info') }}">
-                                                {{ ucfirst($order->status) }}
-                                            </span>
+                                            @if($order->status == 'completed' || $order->status == 1)
+                                                <span class="badge bg-success">Selesai</span>
+                                            @elseif($order->status == 'pending' || $order->status == 0)
+                                                <span class="badge bg-warning">Pending</span>
+                                            @elseif($order->status == 'processing')
+                                                <span class="badge bg-info">Diproses</span>
+                                            @else
+                                                <span class="badge bg-danger">Batal</span>
+                                            @endif
                                         </td>
                                         <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
                                         <td>
-                                            <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-primary">Lihat</a>
+                                            <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-outline-primary">Detail</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -175,6 +197,7 @@
 </div>
 
 <script>
+@if($revenueChart->sum('total') > 0)
 document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('revenueChart').getContext('2d');
     const revenueData = @json($revenueChart);
@@ -182,30 +205,49 @@ document.addEventListener('DOMContentLoaded', function() {
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: revenueData.map(item => item.date),
+            labels: revenueData.map(item => {
+                if (item.date) {
+                    // Data harian
+                    const date = new Date(item.date);
+                    return date.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit' });
+                } else if (item.year && item.month) {
+                    // Data bulanan
+                    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+                    return `${monthNames[item.month - 1]} ${item.year}`;
+                }
+                return '';
+            }),
             datasets: [{
                 label: 'Pendapatan',
                 data: revenueData.map(item => item.total),
-                borderColor: 'rgba(78, 115, 223, 1)',
-                backgroundColor: 'rgba(78, 115, 223, 0.1)',
-                borderWidth: 2,
-                fill: true
+                borderColor: '#4f46e5',
+                backgroundColor: 'rgba(79,70,229,0.2)',
+                tension: 0.4,
+                fill: true,
+                pointRadius: 5
             }]
         },
         options: {
             responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Rp ' + context.raw.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            },
             scales: {
                 y: {
-                    beginAtZero: true,
                     ticks: {
-                        callback: function(value) {
-                            return 'Rp ' + value.toLocaleString('id-ID');
-                        }
+                        callback: value => 'Rp ' + value.toLocaleString('id-ID')
                     }
                 }
             }
         }
     });
 });
+@endif
 </script>
 @endsection

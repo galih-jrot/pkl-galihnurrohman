@@ -60,9 +60,13 @@
                                 @endif
                             </td>
                             <td class="text-end pe-4">
-                                <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-outline-primary">
-                                    Detail
-                                </a>
+                                <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-success">Lihat</a>
+                                <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                </form>
                             </td>
                         </tr>
                     @empty

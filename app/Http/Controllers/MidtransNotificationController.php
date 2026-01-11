@@ -218,7 +218,7 @@ class MidtransNotificationController extends Controller
         // ============================================================
         // RESTOCK LOGIC (Kembalikan stok produk)
         // ============================================================
-        foreach ($order->orderItems as $item) {
+        foreach ($order->items as $item) {
             $item->product?->increment('stock', $item->quantity);
         }
 

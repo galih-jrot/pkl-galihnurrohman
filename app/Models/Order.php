@@ -17,6 +17,7 @@ class Order extends Model
         'status',
         'payment_status',
         'snap_token', // <--- Tambahkan baris ini!
+        'qris_string', // <--- Untuk menyimpan QR string dari Midtrans
         'shipping_name',
         'shipping_phone',
         'shipping_address',

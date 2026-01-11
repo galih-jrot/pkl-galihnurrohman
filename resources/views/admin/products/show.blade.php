@@ -72,8 +72,8 @@
 
                         {{-- Status --}}
                         <div class="mb-3 d-flex gap-2">
-                            <span class="badge bg-{{ $product->is_active ? 'success' : 'secondary' }}">
-                                {{ $product->is_active ? 'Aktif' : 'Nonaktif' }}
+                            <span class="badge bg-{{ $product->stock > 0 ? 'success' : 'secondary' }}">
+                                {{ $product->stock > 0 ? 'Aktif' : 'Nonaktif' }}
                             </span>
 
                             @if($product->is_featured)

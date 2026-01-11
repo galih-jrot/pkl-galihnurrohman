@@ -25,6 +25,7 @@ class Product extends Model
         'weight',
         'is_active',
         'is_featured',
+        'status',
     ];
 
     // Casts: Konversi tipe data otomatis
@@ -79,6 +80,11 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function items(): HasMany
+    {
+        return $this->orderItems();
     }
 
     public function cartItems(): HasMany
